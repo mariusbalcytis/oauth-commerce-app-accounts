@@ -1,0 +1,65 @@
+{% extends 'MabaOAuthCommerceAccountsBundle::base.html.twig' %}
+{% block title %}Operations{% endblock %}
+{% block styles %}
+    <style>
+        table.table tr .income {
+            /*text-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);*/
+            color: #669533;
+        }
+        table.table tr .outcome {
+            /*text-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);*/
+            color: #BD4247;
+        }
+        table.table tr th, table.table tbody tr:nth-child(2) td {
+            border-top-width: 2px;
+            border-top-color: #D0D0D0;
+        }
+        table.table tr .numbers {
+            font-family: monospace;
+            font-weight: normal;
+            text-align: right;
+        }
+
+        label.add-on {
+            margin-bottom: 0;
+        }
+
+    </style>
+{% endblock %}
+{% block content %}
+    {{ form_errors(form) }}
+    <form class="form-inline" action="" method="get">
+        <div class="input-prepend">
+            <label class="add-on" for="date_from"><i class="icon-calendar"></i></label>
+            {{ form_widget(form.from, {attr: {class: 'span2 date-input', 'placeholder': 'Date from'}}) }}
+        </div>
+        <div class="input-prepend">
+            <label class="add-on" for="date_to"><i class="icon-calendar"></i></label>
+            {{ form_widget(form.to, {attr: {class: 'span2 date-input', 'placeholder': 'Date until'}}) }}
+        </div>
+        <button type="submit" class="btn btn-primary">Filter</button>
+        {{ form_rest(form) }}
+    </form>
+
+    <hr>
+
+    <div class="row-fluid">
+        {% include 'MabaOAuthCommerceAccountsBundle:Page:operationTable.html.twig' with {data: disposable} %}
+    </div>
+    <h3>Reservations</h3>
+    <div class="row-fluid">
+        {% include 'MabaOAuthCommerceAccountsBundle:Page:reservationTable.html.twig' with {data: reservation} %}
+    </div>
+{% endblock %}
+{% block js %}
+    <script>
+        jQuery(function($) {
+            $('.date-input').datepicker({
+                format: 'yyyy-mm-dd',
+                weekStart: 1
+            }).on('changeDate', function() {
+                $(this).data('datepicker').hide();
+            });
+        });
+    </script>
+{% endblock %}

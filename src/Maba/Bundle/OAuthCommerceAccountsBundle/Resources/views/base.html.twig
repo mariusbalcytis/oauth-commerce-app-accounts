@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% stylesheets
+        'bundles/mabaoauthcommerceaccounts/bootstrap/css/bootstrap.css'
+        'bundles/mabaoauthcommerceaccounts/bootstrap/css/font-awesome.css'
+        'bundles/mabaoauthcommerceaccounts/bootstrap/css/datepicker.css'
+    filter='cssrewrite' %}
+    <link rel="stylesheet" href="{{ asset_url }}" media="screen"/>
+    {% endstylesheets %}
+    <style type="text/css">
+        .hidden {
+            display: none;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+            /* Wrapper for page content to push down footer */
+        #wrap {
+            min-height: 100%;
+            height: auto !important;
+            height: 100%;
+            /* Negative indent footer by it's height */
+            margin: 0 auto -30px;
+        }
+
+            /* Set the fixed height of the footer here */
+        #push,
+        #footer {
+            height: 30px;
+        }
+        #footer {
+            background-color: #f5f5f5;
+            text-align: center;
+        }
+
+            /* Lastly, apply responsive CSS fixes as necessary */
+        @media (max-width: 767px) {
+            #footer {
+                margin-left: -20px;
+                margin-right: -20px;
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+        }
+
+        .form-logout, .top-menu {
+            margin: 12px 0 10px;
+        }
+        .form-logout {
+            margin-left: 30px;
+        }
+        .welcome-message {
+            padding: 7px;
+        }
+
+    </style>
+    {% block styles %}{% endblock %}
+</head>
+<body>
+
+<div id="wrap">
+    {% block top %}{% endblock %}
+    <div class="masthead clearfix container">
+        {% block menu %}
+            {#&#123;&#35;<h1>{% block heading %}<i class="icon-credit-card"></i> Payment gateway{% endblock %}</h1>&#35;&#125;#}
+            <h3 class="muted pull-left"><i class="icon-money icon-large"></i> E-money system</h3>
+            {% if app.user %}
+            <form action="{{ path('logout') }}" method="post" class="form-logout pull-right">
+                <input type="hidden" name="_token" value="{{ csrf_token('logout') }}"/>
+                <div class="pull-left welcome-message">Hello, <b>{{ app.user.username }}</b></div>
+                <ul class="nav nav-pills pull-left">
+                    <li>
+                        <a href="#submit">
+                            <i class="icon icon-signout"></i> Sign out
+                        </a>
+                    </li>
+                </ul>
+            </form>
+            {% endif %}
+            {% set url = app.request.attributes.get('_route') ? path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) : null %}
+            <ul class="nav nav-pills pull-right top-menu">
+                <li {% if url == path('maba_o_auth_commerce_accounts_operations') %}class="active"{% endif %}><a href="{{ path('maba_o_auth_commerce_accounts_operations') }}">Operations</a></li>
+                <li {% if url == path('maba_o_auth_commerce_accounts_fill') %}class="active"{% endif %}><a href="{{ path('maba_o_auth_commerce_accounts_fill') }}">Fill account</a></li>
+                <li {% if url == path('maba_o_auth_commerce_accounts_clients') %}class="active"{% endif %}><a href="{{ path('maba_o_auth_commerce_accounts_clients') }}">API clients</a></li>
+                <li {% if url == path('maba_o_auth_commerce_accounts_about') %}class="active"{% endif %}><a href="{{ path('maba_o_auth_commerce_accounts_about') }}">About</a></li>
+            </ul>
+        {% endblock %}
+    </div>
+    {% block container %}
+    <div class="main-container container">
+        {% block main %}
+            <hr>
+            <div class="jumbotron">
+                <h1>{{ block('title') }}</h1>
+            </div>
+            <hr>
+
+            {% if app.session.started %}
+                {% if app.session.flashBag.has('error') %}
+                    {% for message in app.session.flashBag.get('error') %}
+                        <div class="alert alert-block alert-error">
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                {% if app.session.flashBag.has('success') %}
+                    {% for message in app.session.flashBag.get('success') %}
+                        <div class="alert alert-block alert-success">
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        {% endblock %}
+    </div>
+    {% endblock %}
+
+    <div id="push"></div>
+</div>
+
+<div id="footer">
+    <div class="container">
+        {% block footer %}Example system - Marius Balčytis &copy; 2013{% endblock %}
+    </div>
+</div>
+
+{% javascripts
+    '@MabaOAuthCommerceAccountsBundle/Resources/public/js/jquery.js'
+    '@MabaOAuthCommerceAccountsBundle/Resources/public/bootstrap/js/bootstrap.js'
+    '@MabaOAuthCommerceAccountsBundle/Resources/public/bootstrap/js/bootstrap-datepicker.js'
+%}
+<script src="{{ asset_url }}"></script>
+{% endjavascripts %}
+<script>
+jQuery(function($) {
+    $('form a[href="#submit"]').click(function(evt) {
+        evt.preventDefault();
+        $(this).closest('form').submit();
+    });
+});
+</script>
+{% block js %}{% endblock %}
+</body>
+</html>

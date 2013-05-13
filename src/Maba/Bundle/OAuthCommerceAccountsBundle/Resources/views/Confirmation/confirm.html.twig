@@ -1,0 +1,88 @@
+{% extends 'MabaOAuthCommerceAccountsBundle::base.html.twig' %}
+{% block title %}Permissions request{% endblock %}
+{% block styles %}
+    <style>
+        .btn-reject {
+            margin-top: 20px
+        }
+        .hidden {
+            display: none;
+        }
+        .icon-spin {
+            animation: 0.5s ease 0s normal none 1 spin;
+        }
+        .scopes-list li {
+            margin: 5px 0 10px 1.25em;
+        }
+        .scopes-list li .icon {
+            margin-left: -1.25em;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="row-fluid">
+        <p>
+            Project <strong>{{ client.title }}</strong>, administered by <strong>{{ owner.username }}</strong>,
+            is asking for some permissions. Please review them and confirm or reject the request.
+        </p>
+        <ul class="unstyled scopes-list">
+            {% if userInfoRequested %}
+                <li>
+                    <i class="icon icon-user"></i> Get your user information like username and account ID for making money transfers to.
+                </li>
+            {% endif %}
+            {% for transaction in transactions %}
+                <li>
+                    <i class="icon icon-money"></i>  Make money transfer of <strong>{{ transaction.amount|money_amount }}</strong> to
+                    <strong>{{ transaction.beneficiary.owner.username }}</strong>. Transfer purpose: <br />
+                    &nbsp;<strong>{{ transaction.description }}</strong>
+                </li>
+            {% endfor %}
+        </ul>
+        {% if transactions|length > 0 %}
+            <p class="text-info">Current account balance: <strong>{{ balance|money_amount }}</strong></p>
+        {% endif %}
+        {% if transactions|length > 0 %}
+            <p class="text-warning">Total transaction price: <strong>{{ neededAmount|money_amount }}</strong></p>
+        {% endif %}
+    </div>
+
+    <hr>
+
+    <div class="row-fluid clearfix">
+        <form action="" method="post" class="pull-left">
+            <button type="submit" class="btn btn-inverse btn-small btn-reject"><i class="icon-remove-sign"></i> Reject permission request</button>
+            {{ form_widget(rejectForm.action, {value: 'reject'}) }}
+            {{ form_rest(rejectForm) }}
+        </form>
+        <form action="" method="post" class="pull-right">
+            {{ form_widget(acceptForm.action, {value: 'accept'}) }}
+            {{ form_rest(acceptForm) }}
+            <button type="submit" class="btn btn-success btn-large confirm"><i class="icon-check"></i> Give permissions</button>
+            <button type="submit" class="btn btn-success btn-large hidden"><i class="icon-check icon-spin"></i> Press again to confirm</button>
+        </form>
+    </div>
+{% endblock %}
+{% block js %}
+    <script>
+        jQuery(function($) {
+            $('.confirm').click(function(evt) {
+                var timeout, $btn = $(this), $confirm = $btn.next();
+                evt.preventDefault();
+                $btn.hide();
+                $confirm.show();
+                var $i = $confirm.find('i');
+                var i = 0;
+                $confirm.mouseout(function() {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(function() {
+                        $confirm.hide();
+                        $btn.show();
+                    }, 3000);
+                }).mouseenter(function() {
+                    clearTimeout(timeout);
+                });
+            });
+        });
+    </script>
+{% endblock %}

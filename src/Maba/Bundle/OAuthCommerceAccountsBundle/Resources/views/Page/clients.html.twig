@@ -1,0 +1,115 @@
+{% extends 'MabaOAuthCommerceAccountsBundle::base.html.twig' %}
+{% form_theme form _self %}
+
+{% block title %}API clients{% endblock %}
+{% block content %}
+    <div class="row-fluid">
+        <h2>Your registered API clients</h2>
+
+        {% for client in clients %}
+            {% if loop.index is not divisibleby(2) %}
+                <div class="row-fluid marketing">
+            {% endif %}
+            <div class="span6">
+                <h4>{{ client.title }} ({{ client.redirectUri }})</h4>
+
+                {% for cred in credentials[client.id] %}
+                    <dl>
+                        <dt>access_token</dt><dd>{{ cred.signatureCredentials.macId }}</dd>
+                        <dt>algorithm</dt><dd>{{ cred.signatureCredentials.algorithm }}</dd>
+                    </dl>
+                {% endfor %}
+            </div>
+            {% if loop.last or loop.index is divisibleby(2) %}
+                </div>
+            {% endif %}
+        {% else %}
+            <p class="text-error">No clients registered.</p>
+        {% endfor %}
+
+        <p class="text-info">Your account ID is <strong>{{ account.id }}</strong></p>
+
+        <h3>Register new client</h3>
+
+        <form class="form-horizontal" action="" method="post">
+            <fieldset>
+                <div class="control-group">
+                    <label class="control-label">Title of the client</label>
+                    <div class="controls">
+                        {{ form_widget(form.title) }}
+                        {{ form_errors(form.title) }}
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Domain and path</label>
+                    <div class="controls">
+                        {{ form_widget(form.domain) }}
+                        {{ form_errors(form.domain) }}
+                        <span class="help-inline">For example, https://accounts.maba.lt/shop-area</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Select signing algorithm</label>
+                    <div class="controls">
+                        {{ form_widget(form.algorithm) }}
+                        {{ form_errors(form.algorithm) }}
+                    </div>
+                </div>
+                <div class="control-group public-key hidden" data-toggable-input="form[algorithm]"
+                     data-toggable-on="{{ ['rsa-pkcs1-sha-256', 'rsa-pkcs1-sha-512']|json_encode }}">
+                    <label class="control-label" for="publicKey">Public key</label>
+                    <div class="controls">
+                        {{ form_widget(form.publicKey) }}
+                        <span class="help-inline">Provide your RSA public key in PEM format</span>
+                        {{ form_errors(form.publicKey) }}
+                    </div>
+                </div>
+                <p class="text-info hidden" data-toggable-input="form[algorithm]"
+                   data-toggable-on="{{ ['hmac-sha-256', 'hmac-sha-512']|json_encode }}">
+                    No signing data needed - shared key will be generated for you
+                </p>
+
+                <button type="submit" class="btn btn-primary">Create client</button>
+            </fieldset>
+            {{ form_rest(form) }}
+        </form>
+    </div>
+{% endblock %}
+
+{% block choice_widget_expanded %}
+    {% spaceless %}
+        <div {{ block('widget_container_attributes') }}>
+            {% for child in form %}
+                {{ form_label(child) }}
+            {% endfor %}
+        </div>
+    {% endspaceless %}
+{% endblock choice_widget_expanded %}
+{% block radio_label %}
+    <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
+        {{ form_widget(form) }}
+        {{ label|trans({}, translation_domain) }}
+    </label>
+{% endblock %}
+
+{% block js %}
+    <script>
+        jQuery(function($) {
+            var listeners = $('[data-toggable-input]').each(function() {
+                var $elem = $(this);
+                var data = $elem.data('toggable-on');
+                var inputName = $elem.attr('data-toggable-input');
+                var inputs = $('[name="' + inputName + '"]');
+                inputs.change(function() {
+                    var show = $.inArray(inputs.filter(':checked').val(), data) !== -1;
+                    if (show) {
+                        $elem.slideDown();
+                    } else {
+                        $elem.slideUp();
+                    }
+                });
+                $elem.toggle($.inArray(inputs.filter(':checked').val(), data) !== -1);
+            });
+        });
+    </script>
+{% endblock %}

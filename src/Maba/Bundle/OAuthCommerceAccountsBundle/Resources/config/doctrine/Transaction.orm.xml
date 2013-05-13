@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping">
+    <entity name="Maba\Bundle\OAuthCommerceAccountsBundle\Entity\Transaction" table="transactions"
+            repository-class="Maba\Bundle\OAuthCommerceAccountsBundle\Repository\TransactionRepository">
+        <id name="id" type="integer">
+            <generator strategy="AUTO"/>
+        </id>
+
+        <field name="key" column="transaction_key" type="string" length="255"/>
+        <field name="description" type="string" length="255"/>
+        <field name="amount" type="integer"/>
+        <field name="status" type="integer"/>
+        <field name="credentialsId" type="integer"/>
+
+        <one-to-one field="transfer" target-entity="Maba\Bundle\OAuthCommerceAccountsBundle\Entity\Transfer">
+            <cascade><cascade-all/></cascade>
+            <join-column name="transfer_id" on-delete="SET NULL" on-update="RESTRICT"/>
+        </one-to-one>
+        <many-to-one target-entity="Maba\Bundle\OAuthCommerceAccountsBundle\Entity\Account" field="payer">
+            <join-column name="payer_id" on-delete="SET NULL" on-update="RESTRICT"/>
+        </many-to-one>
+        <many-to-one target-entity="Maba\Bundle\OAuthCommerceAccountsBundle\Entity\Account" field="beneficiary">
+            <join-column name="beneficiary_id" on-delete="SET NULL" on-update="RESTRICT"/>
+        </many-to-one>
+
+        <many-to-one target-entity="Maba\Bundle\OAuthCommerceCommonBundle\Entity\Client" field="client">
+            <join-column name="client_id" on-delete="SET NULL" on-update="RESTRICT"/>
+        </many-to-one>
+        <many-to-one target-entity="Maba\Bundle\OAuthCommerceCommonBundle\Entity\Application" field="application">
+            <join-column name="application_id" on-delete="SET NULL" on-update="RESTRICT"/>
+        </many-to-one>
+    </entity>
+</doctrine-mapping>

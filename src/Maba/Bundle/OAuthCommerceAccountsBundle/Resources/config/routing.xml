@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<routes xmlns="http://symfony.com/schema/routing"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+
+    <import resource="routing/api.xml" prefix="/api/accounts/v1"/>
+
+    <route id="maba_o_auth_commerce_accounts_operations" pattern="/operations">
+        <default key="_controller">MabaOAuthCommerceAccountsBundle:Page:operations</default>
+    </route>
+    <route id="maba_o_auth_commerce_accounts_fill" pattern="/fill">
+        <default key="_controller">MabaOAuthCommerceAccountsBundle:Page:fill</default>
+    </route>
+    <route id="maba_o_auth_commerce_accounts_clients" pattern="/clients">
+        <default key="_controller">MabaOAuthCommerceAccountsBundle:Page:clients</default>
+    </route>
+    <route id="maba_o_auth_commerce_accounts_about" pattern="/">
+        <default key="_controller">MabaOAuthCommerceAccountsBundle:Page:about</default>
+    </route>
+
+    <route id="maba_o_auth_commerce_accounts.confirmation_endpoint" pattern="/confirm">
+        <default key="_controller">MabaOAuthCommerceAccountsBundle:Confirmation:oauthEndpoint</default>
+        <requirement key="_method">GET</requirement>
+    </route>
+    <route id="maba_o_auth_commerce_accounts.confirmation_confirm" pattern="/confirm/{key}">
+        <default key="_controller">MabaOAuthCommerceAccountsBundle:Confirmation:confirm</default>
+        <requirement key="key">\w+</requirement>
+    </route>
+</routes>

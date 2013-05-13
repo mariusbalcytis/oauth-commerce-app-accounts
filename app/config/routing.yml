@@ -1,0 +1,15 @@
+MabaOAuthCommerceAccountsBundle:
+    resource: "@MabaOAuthCommerceAccountsBundle/Resources/config/routing.xml"
+    prefix:   /
+
+MabaOAuthCommerceAccountsBundle_user:
+    resource: "@MabaOAuthCommerceAccountsBundle/Resources/config/routing/user.xml"
+    prefix:   /
+
+MabaOAuthCommerceEncryptedCredentialsBundle:
+    resource: "@MabaOAuthCommerceEncryptedCredentialsBundle/Resources/config/routing.xml"
+    prefix:   /api/auth/v1/encrypted
+
+MabaOAuthCommerceEncryptedCredentialsBundle_certificate:
+    resource: "@MabaOAuthCommerceEncryptedCredentialsBundle/Resources/config/routing/certificate.xml"
+    prefix:   /

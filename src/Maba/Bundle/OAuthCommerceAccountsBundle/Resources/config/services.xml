@@ -1,0 +1,97 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="maba_oauth_commerce_accounts.login_failure_handler"
+                 class="Maba\Bundle\OAuthCommerceAccountsBundle\Login\FailureHandler">
+            <argument type="service" id="service_container"/>
+            <argument type="service">
+                <service class="Symfony\Component\Security\Http\Authentication\DefaultAuthenticationFailureHandler">
+                    <tag name="monolog.logger" channel="security"/>
+                    <argument type="service" id="http_kernel"/>
+                    <argument type="service" id="security.http_utils"/>
+                    <argument type="collection">
+                        <argument key="failure_path">null</argument>
+                        <argument key="failure_forward">false</argument>
+                        <argument key="login_path">login</argument>
+                        <argument key="failure_path_parameter">_failure_path</argument>
+                    </argument>
+                    <argument type="service" id="logger" on-invalid="null"/>
+                </service>
+            </argument>
+            <argument type="service" id="security.encoder_factory"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
+            <argument type="service" id="http_kernel"/>
+        </service>
+
+        <service id="maba_oauth_commerce_accounts.manager_registry"
+                 class="Maba\Bundle\OAuthCommerceAccountsBundle\Manager\Registry"/>
+
+        <service id="maba_oauth_commerce_accounts.manager.fill"
+                 class="Maba\Bundle\OAuthCommerceAccountsBundle\Manager\FillManager">
+            <tag name="maba_oauth_commerce_accounts.transfer_manager"/>
+        </service>
+        <service id="maba_oauth_commerce_accounts.manager.transaction"
+                 class="Maba\Bundle\OAuthCommerceAccountsBundle\Manager\TransactionManager">
+            <tag name="maba_oauth_commerce_accounts.transfer_manager"/>
+            <argument type="service" id="maba_oauth_commerce_accounts.transaction_repository"/>
+            <argument type="service" id="security.context"/>
+        </service>
+
+        <service id="maba_oauth_commerce_accounts.statement_provider"
+                 class="Maba\Bundle\OAuthCommerceAccountsBundle\Provider\StatementProvider">
+            <argument type="service" id="maba_oauth_commerce_accounts.manager_registry"/>
+            <argument type="service">
+                <service class="Maba\Bundle\OAuthCommerceAccountsBundle\Repository\AccountEntryRepository"
+                        factory-service="doctrine.orm.default_entity_manager" factory-method="getRepository">
+                    <argument>MabaOAuthCommerceAccountsBundle:AccountEntry</argument>
+                </service>
+            </argument>
+        </service>
+
+        <service id="maba_oauth_commerce_accounts.twig.accounts"
+                 class="Maba\Bundle\OAuthCommerceAccountsBundle\Twig\AccountsExtension" public="false">
+            <tag name="twig.extension"/>
+        </service>
+
+        <service id="maba_oauth_commerce_accounts.exception_listener.accounts"
+                 class="Maba\Bundle\OAuthCommerceAccountsBundle\Listener\ExceptionListener">
+            <tag name="kernel.event_listener" event="kernel.exception" method="onKernelException"/>
+            <argument>accounts</argument>
+            <argument>%kernel.debug%</argument>
+        </service>
+
+        <service id="maba_oauth_commerce_accounts.access_token_code_manager"
+                 parent="maba_oauth_commerce_proxy.access_token_code_manager">
+            <call method="addAvailableScopeRegexp">
+                <argument>/^transaction:[a-z0-9]+$/</argument>
+            </call>
+            <call method="addAvailableScopeRegexp">
+                <argument>/^user_info$/</argument>
+            </call>
+        </service>
+
+        <service id="maba_oauth_commerce_accounts.transaction_repository"
+                 class="Maba\Bundle\OAuthCommerceAccountsBundle\Repository\TransactionRepository"
+                 factory-service="doctrine.orm.default_entity_manager" factory-method="getRepository">
+            <argument>MabaOAuthCommerceAccountsBundle:Transaction</argument>
+        </service>
+
+        <service id="maba_oauth_commerce_accounts.credentials_handler.password"
+                 class="Maba\Bundle\OAuthCommerceAccountsBundle\CredentialsHandler\PasswordCredentialsHandler">
+            <argument>accounts.maba.lt</argument>
+            <argument type="service" id="maba_oauth_commerce_accounts.transaction_repository"/>
+            <argument type="service" id="security.encoder_factory"/>
+            <argument type="service">
+                <service class="Maba\Bundle\OAuthCommerceAccountsBundle\Repository\AccountEntryRepository"
+                         factory-service="doctrine.orm.default_entity_manager" factory-method="getRepository">
+                    <argument>MabaOAuthCommerceAccountsBundle:User</argument>
+                </service>
+            </argument>
+            <argument type="service" id="security.context"/>
+        </service>
+    </services>
+</container>

@@ -1,0 +1,68 @@
+{% extends 'MabaOAuthCommerceAccountsBundle::base.html.twig' %}
+{% block styles %}
+    <style type="text/css">
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .form-signin {
+            padding: 19px 29px 29px;
+            margin: 0 auto 20px;
+            background-color: #fff;
+            border: 1px solid #e5e5e5;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+            -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+            -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+            box-shadow: 0 1px 2px rgba(0,0,0,.05);
+        }
+        .form-signin .form-signin-heading,
+        .form-signin .checkbox {
+            margin-bottom: 10px;
+        }
+        .form-signin input[type="text"],
+        .form-signin input[type="password"] {
+            font-size: 16px;
+            height: auto;
+            margin-bottom: 15px;
+            padding: 7px 9px;
+        }
+
+        .main-container {
+            width: 500px;
+        }
+
+    </style>
+{% endblock %}
+{% block title %}Sign in{% endblock %}
+{% block top %}
+    <div class="alert alert-info">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <i class="icon icon-lock"></i> <strong>Avoid phishers!</strong>
+        Before providing your login credentials always make sure, that protocol is
+        <strong>http<span style="text-decoration: underline">s</span></strong>,
+        the domain is <strong>accounts.maba.lt</strong> and no security warning is shown.<br/>
+        Never provide them in any other way than using form in this website.
+    </div>
+{% endblock %}
+{% block main %}
+    {% if error %}
+        <div class="alert alert-error">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{ error.message }}
+        </div>
+    {% endif %}
+
+    <form class="form-signin" action="{{ path('login_check') }}" method="post">
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <input type="text"autocomplete="off" class="input-block-level" placeholder="Username" name="_username" value="{{ last_username }}"/>
+        <input type="password"autocomplete="off" class="input-block-level" placeholder="Password" name="_password"/>
+        <div class="alert alert-info">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>No account?</strong> If user is not found by username, new one will be created
+        </div>
+        <input type="hidden" name="_token" value="{{ csrf_token('login') }}"/>
+        <input type="submit" class="btn btn-large btn-primary" value="Sign in"/>
+    </form>
+{% endblock %}

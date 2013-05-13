@@ -1,0 +1,25 @@
+{% extends 'MabaOAuthCommerceAccountsBundle::base.html.twig' %}
+{% block title %}Fill account{% endblock %}
+{% block content %}
+    <div class="row-fluid">
+        <p class="text-info">Current account balance: <strong>{{ balance|money_amount }}</strong></p>
+        {% if neededAmount %}
+            <p class="text-warning">Needed amount: <strong>{{ neededAmount|money_amount }}</strong></p>
+        {% endif %}
+        {{ form_errors(form) }}
+        <form method="post" action="">
+            <fieldset>
+                <legend>Magic form</legend>
+                <label for="amount">Provide fill amount:</label>
+                <div class="input-append">
+                    {{ form_widget(form.amount, {attr: {class: 'span5 text-right'}}) }}
+                    <span class="add-on">.00</span>
+                </div>
+                {{ form_errors(form.amount) }}
+                <span class="help-block">As this is example system, filling account is easy as pressing this button</span>
+                <button type="submit" class="btn btn-success btn-large">Get money!</button>
+            </fieldset>
+            {{ form_rest(form) }}
+        </form>
+    </div>
+{% endblock %}

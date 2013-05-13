@@ -1,0 +1,67 @@
+<table class="table table-striped table-bordered {#table-hover#} table-condensed">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Transfer ID</th>
+            <th>Entry ID</th>
+            <th>Operation</th>
+            <th>Other party</th>
+            <th>Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% block startingBalance %}
+            <tr>
+                <th colspan="5">Starting balance</th>
+                <th class="numbers">
+                    {{ data.startingBalance|money_amount('&nbsp;') }}
+                </th>
+            </tr>
+        {% endblock %}
+        {% set turnover = 0 %}
+        {% for statement in data.statements %}
+            {% set turnover = turnover + statement.amount %}
+            <tr>
+                <td>{{ statement.date.format('Y-m-d H:i') }}</td>
+                <td>{{ statement.transferId }}</td>
+                <td>{{ statement.entryId }}</td>
+                <td>{{ statement.description }}</td>
+                <td>{{ statement.otherParty ? statement.otherParty.owner.username : '' }}</td>
+                <td class="{% block incomeClass -%}
+                    {%- if statement.amount >= 0 -%}
+                    income
+                    {%- elseif statement.amount < 0 -%}
+                    outcome
+                    {%- endif -%}
+                {%- endblock %} numbers">
+                    {{ statement.amount|money_amount('+') }}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6" class="muted">
+                    {% block noneFound %}
+                        Nothing here, <a href="{{ path('maba_o_auth_commerce_accounts_fill') }}">fill account</a>
+                        or buy something to see some operations
+                    {% endblock %}
+                </td>
+            </tr>
+        {% endfor %}
+        {% block turnover %}
+            <tr>
+                <th colspan="5">Turnover</th>
+                <th class="{% if turnover > 0 %}income{% elseif turnover < 0 %}outcome{% endif %} numbers">
+                    {{ turnover|money_amount('+', '&nbsp;') }}
+                </th>
+            </tr>
+        {% endblock %}
+        {% block endingBalance %}
+            <tr>
+                <th colspan="5">{% block endingBalanceLabel %}Ending balance{% endblock %}</th>
+                <th class="numbers">
+                    {{ data.endingBalance|money_amount('&nbsp;') }}
+                </th>
+            </tr>
+        {% endblock %}
+    </tbody>
+</table>
