@@ -34,7 +34,9 @@
         "maba-oauth-commerce/bundle-proxy": "dev-master",
         "maba-oauth-commerce/bundle-common": "@dev",
         "maba-oauth-commerce/php-lib-base": "@dev",
-        "zendframework/zend-uri": "2.1.*"
+        "zendframework/zend-uri": "2.1.*",
+
+        "kriswallsmith/assetic": "v1.1.0-alpha4"
     },
     "scripts": {
         "post-install-cmd": [
