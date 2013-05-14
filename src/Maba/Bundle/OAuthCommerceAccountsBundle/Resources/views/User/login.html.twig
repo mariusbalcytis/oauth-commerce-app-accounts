@@ -39,10 +39,11 @@
 {% block top %}
     <div class="alert alert-info">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <i class="icon icon-lock"></i> <strong>Avoid phishers!</strong>
+        <img src="{{ asset('bundles/mabaoauthcommerceaccounts/img/https.png') }}" class="pull-left" style="margin-right: 20px"/>
+        <i class="icon icon-lock"></i> <strong>Secure your money!</strong>
         Before providing your login credentials always make sure, that protocol is
         <strong>http<span style="text-decoration: underline">s</span></strong>,
-        the domain is <strong>accounts.maba.lt</strong> and no security warning is shown.<br/>
+        the domain is <strong>accounts.maba.lt</strong> and no security warning is shown.
         Never provide them in any other way than using form in this website.
     </div>
 {% endblock %}

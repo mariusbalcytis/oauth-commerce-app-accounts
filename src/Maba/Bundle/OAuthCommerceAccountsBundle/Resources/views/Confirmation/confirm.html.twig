@@ -17,6 +17,10 @@
         .scopes-list li .icon {
             margin-left: -1.25em;
         }
+
+        .anti-clickjacking {
+            display: none;
+        }
     </style>
 {% endblock %}
 {% block content %}
@@ -49,7 +53,7 @@
 
     <hr>
 
-    <div class="row-fluid clearfix">
+    <div class="row-fluid clearfix anti-clickjacking">
         <form action="" method="post" class="pull-left">
             <button type="submit" class="btn btn-inverse btn-small btn-reject"><i class="icon-remove-sign"></i> Reject permission request</button>
             {{ form_widget(rejectForm.action, {value: 'reject'}) }}
@@ -62,6 +66,11 @@
             <button type="submit" class="btn btn-success btn-large hidden"><i class="icon-check icon-spin"></i> Press again to confirm</button>
         </form>
     </div>
+    <noscript>
+        <div class="row-fluid clearfix">
+            Due to security reasons, you need to enable JavaScript to confirm the transaction
+        </div>
+    </noscript>
 {% endblock %}
 {% block js %}
     <script>
@@ -83,6 +92,12 @@
                     clearTimeout(timeout);
                 });
             });
+
+            if (window.self === window.top || window.parent === window) {
+                $('.anti-clickjacking').show();
+            } else {
+                window.top.location = document.location;
+            }
         });
     </script>
 {% endblock %}
