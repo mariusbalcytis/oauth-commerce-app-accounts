@@ -64,10 +64,16 @@
                         {{ form_errors(form.publicKey) }}
                     </div>
                 </div>
-                <p class="text-info hidden" data-toggable-input="form[algorithm]"
-                   data-toggable-on="{{ ['hmac-sha-256', 'hmac-sha-512']|json_encode }}">
-                    No signing data needed - shared key will be generated for you
-                </p>
+                <div class="hidden" data-toggable-input="form[algorithm]"
+                     data-toggable-on="{{ ['hmac-sha-256', 'hmac-sha-512']|json_encode }}">
+                    <p class="text-info">
+                        No signing data needed - shared key will be generated for you
+                    </p>
+                    <p class="text-error">
+                        This signing method is provided only for testing purposes - electronic commerce model
+                        requires using private-public key signatures when communicating between client and server
+                    </p>
+                </div>
 
                 <button type="submit" class="btn btn-primary">Create client</button>
             </fieldset>
