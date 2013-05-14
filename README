@@ -22,9 +22,11 @@ This system has dependencies on related components:
   - [oauth-commerce-bundle-encrypted-credentials] - used for encrypted credentials authorization grant type
   - [oauth-commerce-bundle-common] - common classes for model-related systems
 
-  cd /var/www/accounts
-  git clone https://github.com/mariusbalcytis/oauth-commerce-app-accounts.git .
-  composer install
+Installing:
+
+    cd /var/www/accounts
+    git clone https://github.com/mariusbalcytis/oauth-commerce-app-accounts.git .
+    composer install
 
 
   [oauth-commerce-node-proxy]: https://github.com/mariusbalcytis/oauth-commerce-node-proxy

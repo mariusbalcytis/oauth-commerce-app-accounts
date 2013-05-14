@@ -1,0 +1,27 @@
+parameters:
+    database_driver:   pdo_mysql
+    database_host:     localhost
+    database_port:     ~
+    database_name:     ~
+    database_user:     ~
+    database_password: ~
+
+    mailer_transport:  smtp
+    mailer_host:       localhost
+    mailer_user:       ~
+    mailer_password:   ~
+
+    locale:            en
+    secret:            ~
+
+    maba_oauth_commerce.internal_client.signature_credentials:
+        access_token: ~
+        mac_key: ~
+        mac_algorithm: ~
+
+    maba_oauth_commerce_proxy.header_signature_secret: ~
+    maba_oauth_commerce.internal_client.default_base_url: ~
+
+    maba_oauth_commerce_encrypted_credentials.certificate_content: ~
+    maba_oauth_commerce.private_key: ~
+    maba_oauth_commerce.private_key_password: ~
